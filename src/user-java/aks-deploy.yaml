@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-java
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: user-java
+  template:
+    metadata:
+      creationTimestamp: 
+      labels:
+        app: user-java
+    spec:
+      containers:
+      - name: user-java
+        image: registryine4658.azurecr.io/tripinsights/user-java:1.0
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+        - name: SQL_USER
+          value: sqladminiNe4658
+        - name: SQL_PASSWORD
+          value: qA0w25Fw9
+        - name: SQL_SERVER
+          value: sqlserverine4658.database.windows.net
+        - name: SQL_DBNAME
+          value: mydrivingDB
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-java
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: user-java

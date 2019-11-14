@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trips
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: trips
+  template:
+    metadata:
+      creationTimestamp: 
+      labels:
+        app: trips
+    spec:
+      containers:
+      - name: trips
+        image: registryine4658.azurecr.io/tripinsights/trips:1.0
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        env:
+        - name: SQL_USER
+          value: sqladminiNe4658
+        - name: SQL_PASSWORD
+          value: qA0w25Fw9
+        - name: SQL_SERVER
+          value: sqlserverine4658.database.windows.net
+        - name: SQL_DBNAME
+          value: mydrivingDB
+        - name: ASPNETCORE_ENVIRONMENT
+          value: Production
+        - name: OPENAPI_DOCS_URI
+          value: https://localhost:80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: trips
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+  selector:
+    app: trips
