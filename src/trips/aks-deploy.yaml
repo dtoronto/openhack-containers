@@ -13,6 +13,7 @@ spec:
       creationTimestamp: 
       labels:
         app: trips
+        aadpodidbinding: keyvault-user
     spec:
       containers:
       - name: trips
@@ -21,18 +22,30 @@ spec:
         - containerPort: 80
           protocol: TCP
         env:
-        - name: SQL_USER
-          value: sqladminiNe4658
-        - name: SQL_PASSWORD
-          value: qA0w25Fw9
-        - name: SQL_SERVER
-          value: sqlserverine4658.database.windows.net
         - name: SQL_DBNAME
           value: mydrivingDB
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
         - name: OPENAPI_DOCS_URI
           value: https://localhost:80
+        volumeMounts:
+            - name: secrets
+              mountPath: "/secrets"
+              readOnly: true
+      volumes:
+      - name: secrets
+        flexVolume:
+          driver: "azure/kv"
+          options:
+            usepodidentity: "true"         # [OPTIONAL] if not provided, will default to "false"
+            keyvaultname: "team10-kv"      # the name of the KeyVault
+            keyvaultobjectnames: "sqluser;sqlpassword;sqlserver"        # list of KeyVault object names (semi-colon separated)
+            keyvaultobjecttypes: "secret;secret;secret"    # list of KeyVault object types: secret, key or cert (semi-colon separated)
+            #keyvaultobjectversions: ""     # [OPTIONAL] list of KeyVault object versions (semi-colon separated), will get latest if empty
+            keyvaultobjectaliases: "SQL_USER;SQL_PASSWORD;SQL_SERVER"
+            resourcegroup: "teamResources"  # [REQUIRED FOR < v0.0.14] the resource group of the KeyVault
+            subscriptionid: "f6892e2c-404f-44a4-8889-b4efa546cdff"             # [REQUIRED FOR < v0.0.14] the subscription ID of the KeyVault
+            tenantid: "1306c3ab-99cf-443b-bacf-a79b9d3cd7fa"                   # the tenant ID of the KeyVault
 ---
 apiVersion: v1
 kind: Service
@@ -51,7 +64,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: tripviewer-ingress
+  name: trips-ingress
   namespace: api
   annotations:
     kubernetes.io/ingress.class: nginx
