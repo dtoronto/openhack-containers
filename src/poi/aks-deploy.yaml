@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: trips
+  name: poi
   namespace: api
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: trips
+      app: poi
   template:
     metadata:
       creationTimestamp: 
       labels:
-        app: trips
+        app: poi
     spec:
       containers:
-      - name: trips
-        image: registryine4658.azurecr.io/tripinsights/trips:1.0
+      - name: poi
+        image: registryine4658.azurecr.io/tripinsights/poi:1.0
         ports:
         - containerPort: 80
           protocol: TCP
@@ -31,22 +31,21 @@ spec:
           value: mydrivingDB
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
-        - name: OPENAPI_DOCS_URI
-          value: https://localhost:80
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: trips
+  name: poi
   namespace: api
   annotations:
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+
 spec:
   type: LoadBalancer
   ports:
   - port: 80
   selector:
-    app: trips
+    app: poi
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -62,6 +61,6 @@ spec:
   - http:
       paths:
       - backend:
-          serviceName: trips
+          serviceName: poi
           servicePort: 80
-        path: /(api/trips/*.*)
+        path: /(api/poi/*.*)
