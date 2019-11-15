@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: poi
+  namespace: api
 spec:
   replicas: 3
   selector:
@@ -21,15 +22,13 @@ spec:
         - containerPort: 80
           protocol: TCP
         env:
-        - name: CONFIG_FILES_PATH
-          value: /app/secrets
         - name: SQL_DBNAME
           value: mydrivingDB
         - name: ASPNETCORE_ENVIRONMENT
           value: Production
         volumeMounts:
             - name: secrets
-              mountPath: "/app/secrets"
+              mountPath: "/secrets"
               readOnly: true
       volumes:
       - name: secrets
@@ -64,7 +63,7 @@ spec:
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: tripviewer-ingress
+  name: poi-ingress
   namespace: api
   annotations:
     kubernetes.io/ingress.class: nginx
