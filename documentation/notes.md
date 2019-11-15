@@ -100,7 +100,7 @@ docker tag tripinsights/user-java:1.0 registryine4658.azurecr.io/tripinsights/us
 docker push registryine4658.azurecr.io/tripinsights/user-java:1.0
 
 ## userprofile
-docker build --no-cache --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="$(Get-Date((Get-Date).ToUniversalTime()) -UFormat '%Y-%m-%dT%H:%M:%SZ')" --build-arg IMAGE_SOURCE_REVISION="$(git rev-parse HEAD)" -f ..\..\dockerfiles\Dockerfile_2 -t 
+docker build --no-cache --build-arg IMAGE_VERSION="1.0" --build-arg IMAGE_CREATE_DATE="$(Get-Date((Get-Date).ToUniversalTime()) -UFormat '%Y-%m-%dT%H:%M:%SZ')" --build-arg IMAGE_SOURCE_REVISION="$(git rev-parse HEAD)" -f ..\..\dockerfiles\Dockerfile_2 -t
 "tripinsights/userprofile:1.0" .
 docker tag tripinsights/userprofile:1.0 registryine4658.azurecr.io/tripinsights/userprofile:1.0
 docker push registryine4658.azurecr.io/tripinsights/userprofile:1.0
@@ -109,3 +109,9 @@ docker push registryine4658.azurecr.io/tripinsights/userprofile:1.0
 ### Second Challenge
 
 AKS!!!
+
+### Fourth Challenge
+
+1. create key, add secrets to the key vault
+2. hook up k8s to key vault
+3. update yaml to use key vault secrets
